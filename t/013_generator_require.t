@@ -21,7 +21,13 @@ is_deeply( \@log, [], "log empty" );
 
 eval { +require "this_file_does_not_exist.pm" }; my $line = __LINE__;
 
-my $error = quotemeta("Can't locate this_file_does_not_exist.pm in \@INC ") . ".*" . quotemeta("\@INC contains: @INC) at " . __FILE__ . " line $line.") . "\n";
+#my $error = quotemeta("Can't locate this_file_does_not_exist.pm in \@INC ") . ".*" . quotemeta("\@INC contains: @INC) at " . __FILE__ . " line $line.") . "\n";
+
+#my $error = quotemeta("Can't locate this_file_does_not_exist.pm in \@INC ") . ".*" . quotemeta("\@INC contains: @INC) at " . __FILE__ . " line $line.") . "\n";
+my $error = "Can't locate this_file_does_not_exist.pm in \@INC " . ".*" . "\@INC contains: @INC at " . __FILE__ . " line $line." . "\n";
+
+print STDERR "XXX: <$error>\n";
+
 cmp_deeply(
         [ @log[0..1] ],
 	[
@@ -30,7 +36,9 @@ cmp_deeply(
 			generator => $g,
 			file => "this_file_does_not_exist.pm",
 			matched_file => undef,
-			error => re(qr{^$error}),
+            error => re(qr{^$error}),
+			#error => qr{^$error},
+            #error => re(qr{^\Q$error\E}),
 		],
 	],
 	"log events"
